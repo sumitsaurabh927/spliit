@@ -1,11 +1,13 @@
 name: E2E
 
-# Manually, or on release tags -- the same trigger as the Docker image build in
-# cd.yml. The app under test is built from this checkout, so this workflow is
-# independent of cd.yml and does not wait for the image to be published.
+# Manually, on pull requests, on pushes to main, and on release tags. The app
+# under test is built from this checkout, so this workflow is independent of
+# cd.yml and does not wait for the image to be published.
 on:
   workflow_dispatch:
+  pull_request:
   push:
+    branches: [main]
     tags: ['*']
 
 concurrency:
@@ -20,6 +22,10 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v7
+        with:
+          # On pull requests, test the PR head commit rather than GitHub's
+          # synthetic merge commit, so Currents reports against the real commit.
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
 
       - name: Set up Node.js
         uses: actions/setup-node@v7
@@ -40,6 +46,10 @@ jobs:
 
       - name: Run Playwright tests
         run: npx playwright test
+        env:
+          CURRENTS_RECORD_KEY: ${{ secrets.CURRENTS_RECORD_KEY }}
+          # One Currents run per workflow attempt, so re-runs don't merge.
+          CURRENTS_CI_BUILD_ID: ${{ github.repository }}-${{ github.run_id }}-${{ github.run_attempt }}
 
       - name: Collect container logs
         if: failure()
