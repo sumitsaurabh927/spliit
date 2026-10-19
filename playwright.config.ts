@@ -1,3 +1,4 @@
+import { currentsReporter } from "@currents/playwright";
 import { defineConfig, devices } from '@playwright/test'
 
 /**
@@ -19,14 +20,15 @@ export default defineConfig({
   expect: { timeout: 10_000 },
   reporter: process.env.CI
     ? [
-        ['github'],
-        ['list'],
-        ['html', { open: 'never', outputFolder: 'playwright-report' }],
-      ]
+      ['github'],
+      ['list'],
+      ['html', { open: 'never', outputFolder: 'playwright-report' }],
+      currentsReporter(),
+    ]
     : [
-        ['list'],
-        ['html', { open: 'never', outputFolder: 'playwright-report' }],
-      ],
+      ['list'],
+      ['html', { open: 'never', outputFolder: 'playwright-report' }],
+    ],
   use: {
     baseURL: process.env.E2E_BASE_URL ?? 'http://localhost:3000',
     navigationTimeout: 30_000,

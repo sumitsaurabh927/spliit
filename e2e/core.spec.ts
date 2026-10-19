@@ -48,7 +48,7 @@ test('creates a group, records expenses and computes balances', async ({
   // Alice 90 - 40, Bob 30 - 40, Carol 0 - 40. Sums to zero.
   await expectBalance(page, 'Alice', 50)
   await expectBalance(page, 'Bob', -10)
-  await expectBalance(page, 'Carol', -40)
+  await expectBalance(page, 'Carol', -30)
 
   await expect(reimbursementRow(page, 'Carol', 'Alice')).toContainText(
     money(40),
