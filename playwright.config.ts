@@ -1,4 +1,4 @@
-import { currentsReporter } from "@currents/playwright";
+import { currentsReporter } from '@currents/playwright'
 import { defineConfig, devices } from '@playwright/test'
 
 /**
@@ -20,23 +20,24 @@ export default defineConfig({
   expect: { timeout: 10_000 },
   reporter: process.env.CI
     ? [
-      ['github'],
-      ['list'],
-      ['html', { open: 'never', outputFolder: 'playwright-report' }],
-      currentsReporter(),
-    ]
+        ['github'],
+        ['list'],
+        ['html', { open: 'never', outputFolder: 'playwright-report' }],
+        currentsReporter(),
+      ]
     : [
-      ['list'],
-      ['html', { open: 'never', outputFolder: 'playwright-report' }],
-    ],
+        ['list'],
+        ['html', { open: 'never', outputFolder: 'playwright-report' }],
+        currentsReporter(),
+      ],
   use: {
     baseURL: process.env.E2E_BASE_URL ?? 'http://localhost:3000',
     navigationTimeout: 30_000,
     // retain-on-failure rather than on-first-retry: with retries in CI, a test
     // that fails then passes would otherwise leave no evidence behind.
-    trace: 'retain-on-failure',
-    screenshot: 'only-on-failure',
-    video: 'retain-on-failure',
+    trace: 'on',
+    screenshot: 'on',
+    video: 'on',
   },
   projects: [
     {
