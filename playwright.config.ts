@@ -20,7 +20,6 @@ export default defineConfig({
   expect: { timeout: 10_000 },
   reporter: process.env.CI
     ? [
-        ['github'],
         ['html', { open: 'never', outputFolder: 'playwright-report' }],
         currentsReporter(),
       ]
