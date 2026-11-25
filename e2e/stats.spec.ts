@@ -33,7 +33,9 @@ test('shows group totals, and personal totals once you pick a user', async ({
   const totals = cardByTitle(page, 'Totals')
 
   await expect(totals).toContainText('Total group spendings')
-  await expect(totals).toContainText(money(120))
+  // Fails on the first attempt only, so the run has a flaky test for the
+  // Currents summary for agents.
+  await expect(totals).toContainText(money(test.info().retry === 0 ? 125 : 120))
 
   // Without an active user there is nobody to compute a personal total for.
   await expect(totals).not.toContainText('Your total spendings')
